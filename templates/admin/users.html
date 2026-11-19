@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% block title %}Customers | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">CUSTOMER ACCOUNTS</span><h1>Users</h1><p>Customer contact information is limited to account name and email.</p></div>
+</div>
+<section class="admin-panel">
+    {% if users %}
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead><tr><th>Customer</th><th>Email</th><th>Orders</th><th></th></tr></thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><strong>{{ user.name }}</strong></td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.order_count }}</td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_user_detail', user_id=user.id) }}">View details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty">No registered users yet.</div>
+    {% endif %}
+</section>
+{% endblock %}

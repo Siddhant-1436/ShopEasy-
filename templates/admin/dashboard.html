@@ -1,0 +1,66 @@
+{% extends "admin/base.html" %}
+{% block title %}Overview | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div>
+        <span class="admin-kicker">STORE OVERVIEW</span>
+        <h1>Good to see you, {{ session.get('admin_name', 'Admin') }}</h1>
+        <p>Here is what is happening in your ShopEasy store.</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('admin_product_create') }}"><i class="bi bi-plus-lg" aria-hidden="true"></i> Add product</a>
+</div>
+
+<section class="admin-stat-grid" aria-label="Store totals">
+    <article class="admin-stat-card">
+        <span class="admin-stat-icon blue"><i class="bi bi-people" aria-hidden="true"></i></span>
+        <span class="admin-stat-label">Total users</span>
+        <strong>{{ "{:,}".format(totals.users) }}</strong>
+        <span class="admin-stat-note">Registered customer accounts</span>
+    </article>
+    <article class="admin-stat-card">
+        <span class="admin-stat-icon violet"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+        <span class="admin-stat-label">Total products</span>
+        <strong>{{ "{:,}".format(totals.products) }}</strong>
+        <span class="admin-stat-note">In your product catalogue</span>
+    </article>
+    <article class="admin-stat-card">
+        <span class="admin-stat-icon amber"><i class="bi bi-receipt" aria-hidden="true"></i></span>
+        <span class="admin-stat-label">Total orders</span>
+        <strong>{{ "{:,}".format(totals.orders) }}</strong>
+        <span class="admin-stat-note">Demo and customer orders</span>
+    </article>
+    <article class="admin-stat-card">
+        <span class="admin-stat-icon green"><i class="bi bi-currency-rupee" aria-hidden="true"></i></span>
+        <span class="admin-stat-label">Total sales</span>
+        <strong>₹{{ "{:,}".format(totals.sales) }}</strong>
+        <span class="admin-stat-note">Excludes cancelled orders; demo totals</span>
+    </article>
+</section>
+
+<section class="admin-panel">
+    <div class="admin-panel-heading">
+        <div><h2>Recent orders</h2><p>Latest activity from your store</p></div>
+        <a href="{{ url_for('admin_orders') }}">View all <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th><th class="text-end">Total</th></tr></thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><a class="admin-strong-link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">#{{ order.id }}</a></td>
+                    <td>{{ order.customer_name or 'Guest checkout' }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td><span class="admin-status status-{{ order.status }}">{{ order.status|title }}</span></td>
+                    <td class="text-end">₹{{ "{:,}".format(order.grand_total) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty">No orders have been placed yet.</div>
+    {% endif %}
+</section>
+{% endblock %}

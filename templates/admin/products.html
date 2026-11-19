@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Products | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">CATALOGUE</span><h1>Products</h1><p>Manage the items customers can browse and buy.</p></div>
+    <a class="btn btn-primary" href="{{ url_for('admin_product_create') }}"><i class="bi bi-plus-lg" aria-hidden="true"></i> Add product</a>
+</div>
+<section class="admin-panel">
+    {% if products %}
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead><tr><th>Product</th><th>Category</th><th>Price</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><div class="admin-product-cell"><img src="{{ product.image }}" alt=""><strong>{{ product.name }}</strong></div></td>
+                    <td>{{ product.category }}</td>
+                    <td>₹{{ "{:,}".format(product.price) }}</td>
+                    <td>
+                        <div class="admin-row-actions">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_product_edit', product_id=product.id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('admin_product_delete', product_id=product.id) }}" onsubmit="return confirm('Delete this product?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty">No products in the catalogue. Add a product to get started.</div>
+    {% endif %}
+</section>
+{% endblock %}

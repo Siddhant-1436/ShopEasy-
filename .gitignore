@@ -1,0 +1,36 @@
+venv/
+.venv/
+env/
+
+# Local environment settings and credentials
+.env
+.env.*
+!.env.example
+credentials.json
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local app data, including generated secret keys
+instance/
+
+# SQLite databases and their journal / write-ahead-log files
+*.sqlite*
+*.db
+*.db-*
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test and editor artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ user.name }} | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">CUSTOMER DETAILS</span><h1>{{ user.name }}</h1><p>Account information visible to store administrators.</p></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('admin_users') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to users</a>
+</div>
+<section class="admin-panel admin-user-card">
+    <span class="admin-user-avatar"><i class="bi bi-person" aria-hidden="true"></i></span>
+    <div><span class="admin-stat-label">Email address</span><strong>{{ user.email }}</strong></div>
+    <div><span class="admin-stat-label">Customer ID</span><strong>#{{ user.id }}</strong></div>
+    <div><span class="admin-stat-label">Orders</span><strong>{{ user.order_count }}</strong></div>
+    <p class="admin-muted">Password and password hash are never shown in the admin dashboard.</p>
+</section>
+{% endblock %}

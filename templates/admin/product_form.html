@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ page_title }} | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">CATALOGUE</span><h1>{{ page_title }}</h1><p>Product prices are entered as whole Indian rupees.</p></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('admin_products') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to products</a>
+</div>
+<section class="admin-panel admin-form-panel">
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label" for="name">Product name</label>
+                <input class="form-control" id="name" name="name" maxlength="150" value="{{ product.get('name', '') }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="category">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">Choose category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.name }}" {% if product.get('category') == category.name %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="price">Price (₹)</label>
+                <input class="form-control" id="price" name="price" type="number" min="0" max="10000000" step="1" value="{{ product.get('price', '') }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="rating">Rating (optional)</label>
+                <input class="form-control" id="rating" name="rating" type="number" min="0" max="5" step="0.1" value="{{ product.get('rating', '') }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="badge">Badge (optional)</label>
+                <input class="form-control" id="badge" name="badge" maxlength="40" value="{{ product.get('badge', '') }}" placeholder="Bestseller">
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="image">Product image URL</label>
+                <input class="form-control" id="image" name="image" type="text" value="{{ product.get('image', '') }}" placeholder="https://... or /static/..." required>
+                <div class="form-text">Use a secure http(s) URL or an image saved under the static folder.</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" maxlength="2000" required>{{ product.get('description', '') }}</textarea>
+            </div>
+        </div>
+        <div class="admin-form-actions">
+            <a class="btn btn-outline-secondary" href="{{ url_for('admin_products') }}">Cancel</a>
+            <button class="btn btn-primary" type="submit">{{ 'Save changes' if page_title == 'Edit product' else 'Add product' }}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Orders | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">FULFILMENT</span><h1>Orders</h1><p>Review demo orders and update their status.</p></div>
+</div>
+<section class="admin-panel">
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><a class="admin-strong-link" href="{{ url_for('admin_order_detail', order_id=order.id) }}">#{{ order.id }}</a></td>
+                    <td>{{ order.customer_name or 'Guest checkout' }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>₹{{ "{:,}".format(order.grand_total) }}</td>
+                    <td><span class="admin-status status-{{ order.status }}">{{ order.status|title }}</span></td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_order_detail', order_id=order.id) }}">Details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty">No orders to show yet.</div>
+    {% endif %}
+</section>
+{% endblock %}

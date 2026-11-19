@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+{% block title %}Order #{{ order.id }} | ShopEasy Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading">
+    <div><span class="admin-kicker">ORDER DETAILS</span><h1>Order #{{ order.id }}</h1><p>Placed {{ order.created_at }}</p></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('admin_orders') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to orders</a>
+</div>
+<div class="admin-detail-grid">
+    <section class="admin-panel">
+        <div class="admin-panel-heading"><div><h2>Items</h2><p>Product names and prices are saved with the order.</p></div></div>
+        {% if items %}
+        <div class="table-responsive">
+            <table class="table admin-table align-middle">
+                <thead><tr><th>Product</th><th>Unit price</th><th>Quantity</th><th class="text-end">Total</th></tr></thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr><td>{{ item.product_name }}</td><td>₹{{ "{:,}".format(item.unit_price) }}</td><td>{{ item.quantity }}</td><td class="text-end">₹{{ "{:,}".format(item.line_total) }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="admin-empty">This order has no recorded items.</div>
+        {% endif %}
+        <div class="admin-order-totals">
+            <div><span>Subtotal</span><strong>₹{{ "{:,}".format(order.subtotal) }}</strong></div>
+            <div><span>Delivery</span><strong>₹{{ "{:,}".format(order.delivery_charge) }}</strong></div>
+            <div class="grand"><span>Grand total</span><strong>₹{{ "{:,}".format(order.grand_total) }}</strong></div>
+        </div>
+    </section>
+    <aside class="admin-panel admin-order-aside">
+        <h2>Customer</h2>
+        <p><strong>{{ order.customer_name or 'Guest checkout' }}</strong></p>
+        {% if order.customer_email %}<p class="admin-muted">{{ order.customer_email }}</p>{% endif %}
+        <hr>
+        <h2>Order status</h2>
+        <p><span class="admin-status status-{{ order.status }}">{{ order.status|title }}</span></p>
+        <form method="post" action="{{ url_for('admin_order_status_update', order_id=order.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label class="form-label" for="status">Update status</label>
+            <select class="form-select mb-3" id="status" name="status" required>
+                {% for status in statuses %}
+                <option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ status|title }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary w-100" type="submit">Save status</button>
+        </form>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ShopEasy demo checkout page.">
+    <title>Demo Checkout | ShopEasy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="navbar-brand brand" href="{{ url_for('home') }}" aria-label="ShopEasy home">
+                <span class="brand-mark"><i class="bi bi-bag-heart-fill" aria-hidden="true"></i></span>
+                <span>shop<span class="brand-easy">easy</span><small>.</small></span>
+            </a>
+            <a class="header-link" href="{{ url_for('cart') }}">Back to cart</a>
+        </nav>
+    </header>
+
+    <main class="auth-main container">
+        <section class="dashboard-card checkout-demo" aria-labelledby="checkoutTitle">
+            <div class="auth-icon"><i class="bi bi-shield-check" aria-hidden="true"></i></div>
+            <span class="eyebrow">A safe demo experience</span>
+            <h1 id="checkoutTitle">Demo checkout</h1>
+            <p class="auth-subtitle">This project does not process payments. Your cart is saved while you explore.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="auth-messages">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} py-2" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if last_order_id %}
+            <div class="alert alert-success mt-4" role="status">
+                Demo order #{{ last_order_id }} was saved successfully. No payment was taken.
+            </div>
+            <a class="btn btn-primary auth-submit" href="{{ url_for('products_page') }}">Continue shopping</a>
+            {% elif items %}
+            <div class="checkout-items">
+                {% for item in items %}
+                <div class="summary-row">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <strong>₹{{ "{:,}".format(item.line_total) }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong>₹{{ "{:,}".format(subtotal) }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Delivery</span>
+                <strong>{% if delivery_charge %}₹{{ "{:,}".format(delivery_charge) }}{% else %}<span class="free-delivery">FREE</span>{% endif %}</strong>
+            </div>
+            <div class="summary-row summary-total">
+                <span>Grand total</span>
+                <strong>₹{{ "{:,}".format(grand_total) }}</strong>
+            </div>
+            <div class="alert alert-info mt-4 mb-0" role="status">
+                Demo only — placing this order will save it to the local database. No payment is processed.
+            </div>
+            <form method="post" action="{{ url_for('checkout') }}" class="mt-3">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-primary auth-submit" type="submit">Place demo order</button>
+            </form>
+            {% else %}
+            <p>Your cart is empty. Add products before checking out.</p>
+            <a class="btn btn-primary auth-submit" href="{{ url_for('products_page') }}">Browse products</a>
+            {% endif %}
+
+            <a class="text-link mt-4" href="{{ url_for('cart') }}">Return to cart <i class="bi bi-arrow-left" aria-hidden="true"></i></a>
+        </section>
+    </main>
+</body>
+</html>
